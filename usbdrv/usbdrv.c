@@ -10,6 +10,8 @@
 #include "usbdrv.h"
 #include "oddebug.h"
 
+extern void monitorBuddyBlinkLED();
+
 /*
 General Description:
 This module implements the C-part of the USB driver. See usbdrv.h for a
@@ -238,6 +240,7 @@ schar   i;
     usbCrc16Append(&txStatus->buffer[1], len);
     txStatus->len = len + 4;    /* len must be given including sync byte */
     DBG2(0x21 + (((int)txStatus >> 3) & 3), txStatus->buffer, len + 3);
+    USB_RX_USER_HOOK(null, 0)
 }
 
 USB_PUBLIC void usbSetInterrupt(uchar *data, uchar len)
@@ -497,6 +500,7 @@ usbRequest_t    *rq = (void *)data;
 static uchar usbDeviceRead(uchar *data, uchar len)
 {
     if(len > 0){    /* don't bother app with 0 sized reads */
+        USB_RX_USER_HOOK(data, len)
 #if USB_CFG_IMPLEMENT_FN_READ
         if(usbMsgFlags & USB_FLG_USE_USER_RW){
             len = usbFunctionRead(data, len);
@@ -532,7 +536,6 @@ static inline void usbBuildTxBlock(void)
 {
 usbMsgLen_t wantLen;
 uchar       len;
-
     wantLen = usbMsgLen;
     if(wantLen > 8)
         wantLen = 8;

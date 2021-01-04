@@ -20,11 +20,18 @@ On Windows use libusb-win32 from http://libusb-win32.sourceforge.net/.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+#include <io.h>
+#include <getopt.h>
 #include <stdarg.h>
 #include <ctype.h>
 #include <errno.h>
 
+#ifdef _MSC_VER 
+//not #if defined(_WIN32) || defined(_WIN64) because we have strncasecmp in mingw
+#define strncasecmp _strnicmp
+#define strcasecmp _stricmp
+
+#endif
 #include <libusb.h>        /* this is libusb, see http://libusb.sourceforge.net/ */
 #include "opendevice.h" /* common code moved to separate module */
 

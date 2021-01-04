@@ -22,6 +22,7 @@ A debug log consists of a label ('prefix') to indicate which debug log created
 the output and a memory block to dump in hex ('data' and 'len').
 */
 
+// #define DEBUG_LEVEL 2
 
 #ifndef F_CPU
 #   define  F_CPU   12000000    /* 12 MHz */
